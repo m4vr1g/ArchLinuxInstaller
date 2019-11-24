@@ -31,7 +31,7 @@ explain () {
 		exit
 	fi
 
-	grep "^${script_id}:${1}:.*" explanation.txt \
+	grep "^${script_id}:${1}:.*" explanation.en_US \
 	| sed -r "s/^${script_id}:${1}:(.*)/\1/" \
 	| sed "s/<b>/\\\\e[1m/g; \
 		   s/<\/b>/\\\\e[22m/g; \
