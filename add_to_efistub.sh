@@ -6,6 +6,10 @@ DEBUG=2
 INFO=3
 ALL=10
 
+# TODO: config flags
+# --virtualbox ==> startup.nsh
+# --efibootmng ==> efibootmng (DEFAULT)
+
 verbose=$VERBOSE
 
 exec 3>&1
@@ -118,4 +122,7 @@ read -p "> " label
 [ -z "$label" ] && label="Arch Linux"
 
 # Actual add command
-efibootmgr --disk "$disk" --part "$part" --create --label "$label" --loader /vmlinuz-linux --unicode "root=PARTUUID=${root_part_uuid} rw initrd=\initramfs-linux.img" --verbose
+# efibootmgr --disk "$disk" --part "$part" --create --label "$label" --loader /vmlinuz-linux --unicode "root=PARTUUID=${root_part_uuid} rw initrd=\initramfs-linux.img" --verbose
+
+# startup.nsh
+echo -e "vmlinuz-linux --unicode root=PARTUUID=${root_part_uuid} rw initrd=\initramfs-linux.img" > /mnt/boot/startup.nsh
