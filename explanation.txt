@@ -1,0 +1,48 @@
+0001::<u><b>add_to_efistub.sh</b></u>
+0001::This script will try to make the newly installed system bootable without using a bootloader. 
+0001::By
+0001::\tOption 0: <b>efibootmgr</b> 
+0001::\t\tModify your motherboard's boot entries
+0001:: 
+0001::Or if that fails
+0001::\tOption 1: a <b>startup.nsh</b> script on the ESP
+0001::\t\tSome UEFI implementations do not retain EFI variables between cold boots (e.g. VirtualBox) and anything set through the UEFI firmware interface is lost on poweroff. 
+0001::\t\tYou should only use this as a <u><b>last resort</b></u>!
+0001::
+0001:0001:Selecting the root partition (your file system)
+0001:0001:This script does this by parsing the output of <command>parted -lm</command>
+0001:0001:and looking partition not containing types 'esp' or 'swap'
+0001:0001:
+0001:0002:Once you have selected your partition we need the partuuid for both options.
+0001:0002:\t<command>ls -lha /dev/disk/by-partuuid | grep ".*${root}$" | cut -d" " -f10</command>
+0001:0002:
+0001:0002:\t\t<command>ls -lha /dev/disk/partuuid<command>
+0001:0002:\t\t\t==> List all disks by partition uuid and show the partition name.
+0001:0002:\t\t<command>grep ".*${root}$"</command
+0001:0002:\t\t\t==> Filter the output to the selected disk.
+0001:0002:\t\t<command>cut -d" " -f10</command>
+0001:0002:\t\t\t==> Cut the output up by delimiter ' ' and return the tenth field.
+0001:0002:
+0001:0003:Selecting the esp boot partition.
+0001:0003:This script does this by parsing the output of <command>parted -lm</command>
+0001:0003:and looking partition containing type 'esp'
+0001:0003:
+0001:0004:The label shown in the EFI bootmanager when booting your computer.
+0001:0004:
+0001:0005:The actual efibootmgr command.
+0001:0005:\t<command>efibootmgr --disk "$disk" --part "$part" --create --label "$label" --loader /vmlinuz-linux --unicode "root=PARTUUID=${root_part_uuid} rw initrd=\initramfs-linux.img" --verbose</command>
+0001:0005:\t\t--disk\tThe esp disk name
+0001:0005:\t\t--part\tThe esp disk partition
+0001:0005:\t\t--create\tCreate a new entry
+0001:0005:\t\t--label\tThe label show on boot
+0001:0005:\t\t--loader\tThe command used to load the os.
+0001:0005:\t\t\t/vmlinuz-linux\tThe efi image
+0001:0005:\t\t\t--unicode\tUnicode flag
+0001:0005:\t\t\t${root_part_uuid}\tThe partition uuid of the selected root partition.
+0001:0005:\t\t\trest: kernel bootloading line
+0001:0005:
+0001:0006:When all else fails we can add the kernel bootloading line to a startup.nsh script in the esp partition.
+0001:0006:We do this with a simple echo with the output redirected to the startup.nsh file.
+0001:0006:\t<command>echo -e "vmlinuz-linux --unicode root=PARTUUID=${root_part_uuid} rw initrd=\initramfs-linux.img" > /mnt/boot/startup.nsh</command>
+0001:0006:\t\t${root_part_uuid}\tThe partition uuid of the selected root partition.
+0001:0006
