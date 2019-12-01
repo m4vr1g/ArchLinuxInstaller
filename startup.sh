@@ -1,30 +1,6 @@
 #!/bin/bash
 
-# Bring up lan interface
-# TODO: Check if LAN is already connceted before.
-
-read -p "Enable LAN yes(default)/no:" response
-if [ -z "$response" ] \
-	|| [[ "y" == "$response" ]] \
-	|| [[ "yes" == "$response" ]]
-then
-	# TODO: scan for interfaces and ask for each of them.
-	echo "Enabling interface"
-	ip link set enp0s3 up
-	echo "Running dhcpcd"
-	dhcpcd enp0s3
-	
-	sleep 5
-
-	echo -ne "Ping IPv4"
-	ping -4 -I enp0s3 www.google.com -c1 > /dev/null
-	if [ $? -ne 0 ] ; then echo " failed"; else echo " success"; fi  
-	echo -ne "Ping IPv6"
-	ping -6 -I enp0s3 www.google.com -c1 > /dev/null
-	if [ $? -ne 0 ] ; then echo " failed"; else echo " success"; fi
-
-	# TODO: ping interface gateways to check connectivity without internet.
-fi
+. network.sh
 
 read -p "Enable SSH server? [yes(default)/no]:" response
 if [ -z "$response" ] \
