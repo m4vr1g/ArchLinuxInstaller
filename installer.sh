@@ -20,6 +20,9 @@ then
 	. network.sh
 fi
 
+# TODO: Call fdisk a first time to make sure GTK disklabel type
+# g # create guided partition table
+# TODO: Use "Expect" (?)
 sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | fdisk /dev/sda
   o # clear the in memory partition table
   n # new partition
